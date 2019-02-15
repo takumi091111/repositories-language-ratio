@@ -33,7 +33,7 @@ function repos(name) {
 		.then(function() {
 			setTimeout(function() {
 				count();
-			}, 500)
+			}, 1000)
 		});
 }
 
@@ -62,20 +62,40 @@ function count() {
 		total += counts[key];
 	}
 
-	var title = document.createElement("h2"),
-		txt = document.createElement("span");
+	var title = document.createElement("h2"), ul = document.createElement("ul");
 
-	for (var key in counts) result += key + ": " + Math.round(counts[key]/total*100) + "%\n";
+	ul.className = "vcard-details mb-3";
+	for (var key in counts) {
+		var li = document.createElement("li"), spn = document.createElement("span"), color = null;
+		li.className = "vcard-detail pt-1 css-truncate css-truncate-target";
+		color = window.getComputedStyle(li).color;
+
+		li.style = "padding: 0 3px;";
+
+		spn.innerText = key + ": " + Math.round(counts[key]/total*100) + "%";
+		li.appendChild(spn);
+		ul.appendChild(li);
+		// result += key + ": " + Math.round(counts[key]/total*100) + "%\n";
+	}
 	// console.log(result);
 
 	title.className = "mb-1 h4";
 	title.innerText = "Language Ratio";
 
-	txt.className = "p-label";
-	txt.innerText = result;
-
 	div.appendChild(title);
-	div.appendChild(txt);
+	div.appendChild(ul);
+}
+
+function getColor(lang) {
+	var result = "";
+	fetch("https://raw.githubusercontent.com/doda/github-language-colors/master/colors.json")
+		.then(res => res.json())
+		.then(json => {
+			result = json[lang];
+			// console.log(lang + ", " + result)
+			return result;
+		});
+	
 }
 
 function draw(ctx) {
