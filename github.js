@@ -62,11 +62,9 @@ function count() {
 
 	var title = document.createElement("h2"),
 		txt = document.createElement("span");
-	for (var key in counts) {
-		result += key + ": " + Math.round(counts[key]/total*100) + "%\n";
-	}
 
-	console.log(result);
+	for (var key in counts) result += key + ": " + Math.round(counts[key]/total*100) + "%\n";
+	// console.log(result);
 
 	title.className = "mb-1 h4";
 	title.innerText = "Language Ratio";
