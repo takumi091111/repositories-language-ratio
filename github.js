@@ -63,7 +63,7 @@ function count() {
 	var title = document.createElement("h2"),
 		txt = document.createElement("span");
 	for (var key in counts) {
-		result += key + ": " + (counts[key]/total*100) + "%\n";
+		result += key + ": " + Math.round(counts[key]/total*100) + "%\n";
 	}
 
 	console.log(result);
