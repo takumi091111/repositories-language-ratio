@@ -1,10 +1,10 @@
-var urls = [], langs = [], counts = {}, total = 0, result = "", div = null;
+var urls = [], langs = [], counts = {}, colors = {}, total = 0, result = "", div = null;
 
 window.onload = function() {
-	if (document.getElementsByClassName("p-nickname vcard-username d-block").length === 0) return;
+	if (document.getElementsByClassName("p-nickname vcard-username d-block").length === 0 && 
+		document.getElementsByClassName("pagehead-tabs-item selected").length === 0) return;
 
-	var user = document.getElementsByClassName("p-nickname vcard-username d-block")[0].innerText;
-		profile = document.getElementsByClassName("h-card col-3 float-left pr-3")[0],
+	var user = inUserPage() ? document.getElementsByClassName("p-nickname vcard-username d-block")[0].innerText : document.getElementsByClassName("pagehead-tabs-item selected")[0].href.split("/")[3],
 		cv = document.createElement("canvas"),
 		ctx = cv.getContext("2d");
 
@@ -12,17 +12,34 @@ window.onload = function() {
 	div.className = "border-top py-3 clearfix";
 
 	Promise.resolve().then(
-		repos(user)
-	).catch(function(error) {
-		console.log("error = " + error)
+		repos(inUserPage() ? "users" : "orgs", user)
+	).then(function() {
+		switch(inUserPage()) {
+			case true: {
+				var profile = document.getElementsByClassName("h-card col-3 float-left pr-3")[0];
+				profile.appendChild(div);
+				break;
+			}
+			case false: {
+				var box = document.getElementsByClassName("Box-body")[0];
+				div.className = "py-3 clearfix";
+				div.style = "padding-bottom: 0 !important;";
+				box.appendChild(div);
+				break;
+			}
+		}
+		// div.appendChild(cv);
+	}).catch(function(error) {
+		console.log("error: " + error)
 	});
-
-	// div.appendChild(cv);
-	profile.appendChild(div);
 }
 
-function repos(name) {
-	fetch("https://api.github.com/users/" + name + "/repos")
+function inUserPage() {
+	return document.getElementsByClassName("p-nickname vcard-username d-block").length !== 0;
+}
+
+function repos(mode, name) {
+	fetch("https://api.github.com/" + mode + "/" + name + "/repos")
 		.then(res => res.json())
 		.then(json => {
 			for (var i = 0; i < json.length; i++) urls.push(json[i].languages_url);
@@ -45,7 +62,7 @@ function putLangs() {
 				var keys = Object.keys(json);
 				for (var i = 0; i < keys.length; i++) {
 					langs.push(keys[i]);
-					// console.log(keys[i] + ", " + json[keys[i]]);
+					// console.log(urls[i] + ", " + keys[i] + ", " + json[keys[i]]);
 				}
 			});
 	}
@@ -64,38 +81,39 @@ function count() {
 
 	var title = document.createElement("h2"), ul = document.createElement("ul");
 
+	// getColors();
 	ul.className = "vcard-details mb-3";
 	for (var key in counts) {
-		var li = document.createElement("li"), spn = document.createElement("span"), color = null;
+		var li = document.createElement("li"), spn = document.createElement("span"), name = key;
 		li.className = "vcard-detail pt-1 css-truncate css-truncate-target";
-		color = window.getComputedStyle(li).color;
 
 		li.style = "padding: 0 3px;";
 
-		spn.innerText = key + ": " + Math.round(counts[key]/total*100) + "%";
+		spn.innerText = name + ": " + Math.round(counts[name]/total*100) + "%";
+
+		// spn.addEventListener("mouseover", function(){ this.style.boxShadow = "0 11px 0 " + colors[name]; console.log(name + ", " + colors[name]); });
+		// spn.addEventListener("mouseout", function(){ this.style.boxShadow = ""; });
+
 		li.appendChild(spn);
 		ul.appendChild(li);
 		// result += key + ": " + Math.round(counts[key]/total*100) + "%\n";
 	}
 	// console.log(result);
 
-	title.className = "mb-1 h4";
+	title.className = inUserPage() ? "mb-1 h4" : "f4 mb-2 text-normal";
 	title.innerText = "Language Ratio";
 
 	div.appendChild(title);
 	div.appendChild(ul);
 }
 
-function getColor(lang) {
-	var result = "";
+function getColors() {
 	fetch("https://raw.githubusercontent.com/doda/github-language-colors/master/colors.json")
 		.then(res => res.json())
 		.then(json => {
-			result = json[lang];
-			// console.log(lang + ", " + result)
-			return result;
+			colors = json;
+			// console.log(colors);
 		});
-	
 }
 
 function draw(ctx) {
