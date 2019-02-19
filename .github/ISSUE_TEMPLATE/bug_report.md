@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ### Description
-If this is a bug, provide as much information as you can to help reproduce the issue.
+report it
 
 ### Environment
 
