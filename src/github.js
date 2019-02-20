@@ -89,7 +89,7 @@ function count() {
 
 		li.style = "padding: 0 3px;";
 
-		spn.innerText = name + ": " + Math.round(counts[name]/total*100) + "%";
+		spn.innerText = name + ": " + parseFloat(counts[name]/total*100).toFixed(2) + "%";
 
 		// spn.addEventListener("mouseover", function(){ this.style.boxShadow = "0 11px 0 " + colors[name]; console.log(name + ", " + colors[name]); });
 		// spn.addEventListener("mouseout", function(){ this.style.boxShadow = ""; });
@@ -101,7 +101,7 @@ function count() {
 	// console.log(result);
 
 	title.className = inUserPage() ? "mb-1 h4" : "f4 mb-2 text-normal";
-	title.innerText = "Language Ratio";
+	title.innerText = inUserPage() ? "Language Ratio" : "Ratio";
 
 	div.appendChild(title);
 	div.appendChild(ul);
