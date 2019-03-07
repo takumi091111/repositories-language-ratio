@@ -1,0 +1,20 @@
+{
+  "name": "repositories-language-ratio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/github.js",
+  "scripts": {
+    "build": "npx parcel build ./src/github.js ./dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "vue": "^1.0.28-csp"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.0"
+  }
+}

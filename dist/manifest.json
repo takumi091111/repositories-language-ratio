@@ -1,0 +1,13 @@
+{
+	"manifest_version": 2,
+	"name": "repos lang ratio",
+	"description": "display repositories language ratio（＾ω＾）",
+	"version": "1.2",
+	"content_scripts": [ {
+		"all_frames": true,
+    "js": ["github.js"],
+    "css": ["style.css"],
+		"matches": [ "*://github.com/*" ],
+		"run_at": "document_end"
+	} ]
+}
